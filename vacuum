@@ -1,6 +1,5 @@
 #! /bin/ksh
 #Name: Thuc Phan
-#CUA ID: 2595134
 
 typeset goright #goright array
 typeset goleft #goleft array
