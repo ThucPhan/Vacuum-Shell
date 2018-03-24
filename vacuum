@@ -1,0 +1,76 @@
+#! /bin/ksh
+#Name: Thuc Phan
+#CUA ID: 2595134
+
+typeset goright #goright array
+typeset goleft #goleft array
+
+#array index
+integer cnt
+#position of cursor in a line with 80 entries
+integer rcr
+integer lcr
+
+#initialize
+echo "[H" #cursor moves to upper-left corner
+cnt=0
+while (( cnt <= 76 )); do
+	#build the right-going array
+	rcr=0
+	goright[${cnt}]="" #insert space
+	while (( rcr < cnt )); do
+		goright[cnt]=" ${goright[cnt]}"
+		rcr=rcr+1
+	done
+	goright[cnt]="${goright[cnt]}\==<"
+
+	#build the left-going array
+	lcr=76-cnt
+	goleft[${cnt}]='>==/'
+	while (( lcr >= 0 )); do
+		goleft[cnt]=" ${goleft[cnt]}" #insert space
+		lcr=lcr-1
+	done
+
+	cnt=cnt+1
+done
+
+#go down one line on each sweep
+integer line
+integer maxline
+line=0
+maxline=51 #go back and forth 25 times
+
+dir="right"
+cnt=76
+
+while (( line < maxline )); do
+	if [[ "${dir}" = "right" ]]; then
+		rcr=0
+		while (( rcr < cnt )); do
+#clear a line and reset the cursor to the leftmost position
+			echo "[K${goright[${rcr}]}[A"
+			sleep .01
+			rcr=rcr+1
+		done
+		dir="left"
+	else
+		lcr=0
+		while (( lcr < cnt )); do
+#clear a line and reset the cursor to the leftmost position
+			echo "[K${goleft[${lcr}]}[A"
+			sleep .01
+			lcr=lcr+1
+		done
+		dir="right"
+	fi
+
+	#going down 1 line on each sweep
+	echo "[K[A"
+	echo ""
+
+	line=line+1
+done
+
+#emit the string and terminate
+echo "[K(BURP)!!!"
